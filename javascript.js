@@ -97,11 +97,11 @@ function resetGame() {
 }
 
 // FUNCTION: Check if the word is correct when clicking enter
+let j = 0;
 enter.addEventListener("click", function () {
   if (guessedWord.length == 5) {
     // Changes the correctly guessed letters to green
     let boxes = document.querySelectorAll(".box");
-    let j = 0;
     boxes.forEach((item) => {
       if (item.innerHTML != "") {
         if (item.innerHTML.toLowerCase() == hiddenWord[j]) {
