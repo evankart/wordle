@@ -47,13 +47,15 @@ const wordBank = [
   "White",
 ];
 
-// OUTLINE
+// --------- TO DO ------------
+
+// TO DO: Don't show duplicate yellow sqares if letter is only in the word once
 
 // 1. DEFINE VARIABLES
 
-randomIndex = Math.floor(Math.random() * wordBank.length);
+let randomIndex = Math.floor(Math.random() * wordBank.length);
 
-let hiddenWord = "abbot"; // wordBank[randomIndex].toLowerCase() for random word
+let hiddenWord = wordBank[randomIndex].toLowerCase(); // pick random word
 
 let guessedWord = ""; // Blank starting guess
 
@@ -155,6 +157,7 @@ function resetGame() {
     item.classList.remove("green", "yellow"); // removes background colors form boxes on the board
   });
   guessedWord = ""; // resets the current guess to ""
+  randomIndex = Math.floor(Math.random() * wordBank.length);
   hiddenWord = wordBank[randomIndex].toLowerCase(); // changes the hidden word to a new word
   guesses = 0; // resets the number of guesses to zero for new round
   letterKeys.forEach((item) => {
@@ -169,5 +172,3 @@ function deleteLetter() {
   guessedWord = guessedWord.slice(0, -1); // keeps all but the last letter of your guess
   // console.log(guessedWord);
 }
-
-// TO DO: Don't show duplicate yellow sqares if letter is only in the word once
