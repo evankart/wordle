@@ -55,7 +55,9 @@ const wordBank = [
 
 let randomIndex = Math.floor(Math.random() * wordBank.length);
 
-let hiddenWord = wordBank[randomIndex].toLowerCase(); // pick random word
+// let hiddenWord = wordBank[randomIndex].toLowerCase(); // pick random word
+
+let hiddenWord = "break";
 
 let guessedWord = ""; // Blank starting guess
 
@@ -117,19 +119,39 @@ function checkGuess() {
   }
 }
 
+// TO DO: Split up board and guesses by rows
+
 //FUNCTION: Change relevant squares to green or yellow
 function addColors() {
   let j = 0;
+  let yellow = 0;
   boxes.forEach((item) => {
     if (item.innerHTML != "") {
       if (item.innerHTML.toLowerCase() == hiddenWord[j]) {
         item.classList.add("green");
       } else if (hiddenWord.includes(item.innerHTML.toLowerCase())) {
+        let hiddenInstances =
+          hiddenWord.split(item.innerHTML.toLowerCase()).length - 1;
+
+        let guessInstances =
+          hiddenWord.split(item.innerHTML.toLowerCase()).length - 1;
+        console.log(
+          item.innerHTML + " appears " + guessInstances + " times in your guess"
+        );
+        console.log(
+          item.innerHTML +
+            " appears " +
+            hiddenInstances +
+            " times in the hidden word"
+        );
+
         item.classList.add("yellow");
 
-        let numInstances =
-          hiddenWord.split(item.innerHTML.toLowerCase()).length - 1;
-        console.log(item.innerHTML + " appears " + numInstances + " times.");
+        // if (yellow < hiddenInstances) {
+        //   item.classList.add("yellow");
+        //   yellow++;
+        //   console.log(yellow);
+        // }
       }
     }
     j++;
