@@ -63,6 +63,8 @@ let hiddenWord = "break";
 
 let guessedWord = ""; // Blank starting guess
 
+let guessedLetters = [];
+
 let guesses = 0; // Staerting at guess number 0
 
 let currentRow = 1; // Starting in row #1
@@ -87,6 +89,8 @@ letterKeys.forEach((item) => {
       targetBox = document.querySelector(".box:empty"); // sets the target to the next open box
       targetBox.innerHTML = item.innerHTML; // places selected letter in the target box
       item.classList.add("dark");
+      guessedLetters.push(item.innerHTML);
+      console.log(guessedLetters);
       guessedWord = guessedWord.concat(item.innerHTML.toLowerCase()); // adds letter to the end of current guess
       console.log(guessedWord);
     }
@@ -215,8 +219,22 @@ function resetGame() {
 
 // FUNCTION: delete the last letter from your guess
 function deleteLetter() {
+  letterIndex = guessedLetters.indexOf(targetBox.innerHTML);
+  if (letterIndex > -1) {
+    // only splice array when item is found
+    guessedLetters.splice(letterIndex, 1); // 2nd parameter means remove one item only
+  }
+  console.log(guessedLetters);
+
+  for (n of document.querySelectorAll(".letterKey")) {
+    if (n.innerHTML.toLowerCase() == targetBox.innerHTML.toLowerCase()) {
+      n.classList.remove("dark");
+    }
+  }
+
   targetBox.innerHTML = ""; // delete the last letter added
   targetBox = targetBox.previousElementSibling; // changes the target box to previous letter added
   guessedWord = guessedWord.slice(0, -1); // keeps all but the last letter of your guess
+
   // console.log(guessedWord);
 }
