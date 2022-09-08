@@ -107,12 +107,18 @@ function checkGuess() {
     // Checks that guess is 5 letters long
     if (guessedWord.toLowerCase() === hiddenWord.toLowerCase()) {
       // Check if the guessed word is correct
-      youWin();
+      console.log("you win!");
+      resetGame();
     } else {
-      console.log("Not this time!");
+      console.log("Try another guess");
+      guesses++;
+      addColors();
+      guessedWord = "";
+      currentRow++;
+      console.log("Current Row: " + currentRow);
+      rowID = "row" + currentRow;
+      console.log("Row ID: " + rowID);
     }
-    guesses++;
-    addColors();
   } else {
     console.log("Please enter a five letter word."); // If guess is not 5 letters long, promts the user
   }
@@ -178,7 +184,7 @@ function addColors() {
         hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
         guessInstances - hiddenInstances > 0
       ) {
-        spaces[k].classList.add("orange");
+        spaces[k].classList.add("clear");
       }
     }
     j++;
@@ -187,20 +193,6 @@ function addColors() {
       j = 0;
     }
   }
-  guessedWord = "";
-  currentRow++;
-  rowID = "row" + currentRow;
-  console.log("Current Row: " + currentRow);
-  console.log("Row ID: " + rowID);
-}
-
-// FUNCTION: Make all squares green and call resetGame once you've guessed correctly
-function youWin() {
-  boxes.forEach((item) => {
-    item.classList.add("green");
-  });
-  alert("Congrats! You did it!");
-  resetGame();
 }
 
 // FUNCTION: Clear the board and reset the game, then pick a new hidden word
