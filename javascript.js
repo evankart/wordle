@@ -57,9 +57,8 @@ const wordBank = [
 
 let randomIndex = Math.floor(Math.random() * wordBank.length);
 
-// let hiddenWord = wordBank[randomIndex].toLowerCase(); // pick random word
-
-let hiddenWord = "break";
+let hiddenWord = wordBank[randomIndex].toLowerCase(); // pick random word
+// let hiddenWord = "break";
 
 let guessedWord = ""; // Blank starting guess
 
@@ -122,6 +121,7 @@ function checkGuess() {
       console.log("Current Row: " + currentRow);
       rowID = "row" + currentRow;
       console.log("Row ID: " + rowID);
+      guessedLetters = [];
     }
   } else {
     console.log("Please enter a five letter word."); // If guess is not 5 letters long, promts the user
@@ -215,6 +215,7 @@ function resetGame() {
   letterKeys.forEach((item) => {
     item.classList.remove("dark"); // resets keyboard background color
   });
+  guessedLetters = [];
 }
 
 // FUNCTION: delete the last letter from your guess
