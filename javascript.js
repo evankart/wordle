@@ -49,7 +49,9 @@ const wordBank = [
 
 // --------- TO DO ------------
 
-// TO DO: Don't show duplicate yellow sqares if letter is only in the word once
+// TO DO: Fix word/color checker in subsequent guesses after first round is correctly answered
+
+// TO DO: Remove orange color for double guesses (just don't have any color in these cases)
 
 // 1. DEFINE VARIABLES
 
@@ -62,6 +64,10 @@ let hiddenWord = "break";
 let guessedWord = ""; // Blank starting guess
 
 let guesses = 0; // Staerting at guess number 0
+
+let currentRow = 1; // Starting in row #1
+let rowID = "row" + currentRow;
+console.log("Row ID: " + rowID);
 
 const boxes = document.querySelectorAll(".box"); // boxes = all of the boxes on the board
 
@@ -105,9 +111,7 @@ function checkGuess() {
     } else {
       console.log("Not this time!");
     }
-    guessedWord = "";
     guesses++;
-
     addColors();
   } else {
     console.log("Please enter a five letter word."); // If guess is not 5 letters long, promts the user
@@ -125,33 +129,56 @@ function checkGuess() {
 function addColors() {
   let j = 0;
   let yellow = 0;
-  boxes.forEach((item) => {
-    if (item.innerHTML != "") {
-      if (item.innerHTML.toLowerCase() == hiddenWord[j]) {
-        item.classList.add("green");
-      } else if (hiddenWord.includes(item.innerHTML.toLowerCase())) {
-        let hiddenInstances =
-          hiddenWord.split(item.innerHTML.toLowerCase()).length - 1;
 
-        let guessInstances =
-          hiddenWord.split(item.innerHTML.toLowerCase()).length - 1;
+  row = document.getElementById(rowID);
+  console.log("Current Row: " + currentRow);
+
+  let spaces = row.children;
+
+  for (let k = 0; k < spaces.length; k++) {
+    console.log("Letter: " + spaces[k].innerHTML);
+    console.log("Guessed Word: " + guessedWord);
+
+    let hiddenInstances =
+      hiddenWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
+    console.log("Hidden Instances: " + hiddenInstances);
+
+    let guessInstances =
+      guessedWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
+    console.log("Guess Instances: " + guessInstances);
+
+    if (spaces[k].innerHTML != "") {
+      if (spaces[k].innerHTML.toLowerCase() == hiddenWord[j]) {
+        spaces[k].classList.add("green");
+      } else if (
+        hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
+        hiddenInstances >= guessInstances
+      ) {
         console.log(
-          item.innerHTML + " appears " + guessInstances + " times in your guess"
+          spaces[k].innerHTML +
+            " appears " +
+            guessInstances +
+            " times in your guess"
         );
         console.log(
-          item.innerHTML +
+          spaces[k].innerHTML +
             " appears " +
             hiddenInstances +
             " times in the hidden word"
         );
 
-        item.classList.add("yellow");
+        spaces[k].classList.add("yellow");
 
         // if (yellow < hiddenInstances) {
-        //   item.classList.add("yellow");
+        //   spaces[k].classList.add("yellow");
         //   yellow++;
         //   console.log(yellow);
         // }
+      } else if (
+        hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
+        guessInstances - hiddenInstances > 0
+      ) {
+        spaces[k].classList.add("orange");
       }
     }
     j++;
@@ -159,7 +186,12 @@ function addColors() {
     if (j == 5) {
       j = 0;
     }
-  });
+  }
+  guessedWord = "";
+  currentRow++;
+  rowID = "row" + currentRow;
+  console.log("Current Row: " + currentRow);
+  console.log("Row ID: " + rowID);
 }
 
 // FUNCTION: Make all squares green and call resetGame once you've guessed correctly
@@ -176,12 +208,14 @@ function resetGame() {
   let boxes = document.querySelectorAll(".box");
   boxes.forEach((item) => {
     item.innerHTML = ""; // clears the previous guesses from the board
-    item.classList.remove("green", "yellow"); // removes background colors form boxes on the board
+    item.classList.remove("green", "yellow", "orange"); // removes background colors form boxes on the board
   });
   guessedWord = ""; // resets the current guess to ""
   randomIndex = Math.floor(Math.random() * wordBank.length);
   hiddenWord = wordBank[randomIndex].toLowerCase(); // changes the hidden word to a new word
   guesses = 0; // resets the number of guesses to zero for new round
+  currentRow = 1; // Starting in row #1
+  rowID = "row" + currentRow;
   letterKeys.forEach((item) => {
     item.classList.remove("dark"); // resets keyboard background color
   });
