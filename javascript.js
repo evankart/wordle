@@ -58,7 +58,7 @@ const wordBank = [
 let randomIndex = Math.floor(Math.random() * wordBank.length);
 
 let hiddenWord = wordBank[randomIndex].toLowerCase(); // pick random word
-// let hiddenWord = "break";
+// let hiddenWord = "alarm";
 
 let guessedWord = ""; // Blank starting guess
 
@@ -110,7 +110,7 @@ function checkGuess() {
     // Checks that guess is 5 letters long
     if (guessedWord.toLowerCase() === hiddenWord.toLowerCase()) {
       // Check if the guessed word is correct
-      console.log("you win!");
+      alert("YESSS!!!");
       resetGame();
     } else {
       console.log("Try another guess");
