@@ -49,9 +49,7 @@ const wordBank = [
 
 // --------- TO DO ------------
 
-// TO DO: Fix word/color checker in subsequent guesses after first round is correctly answered
-
-// TO DO: Remove orange color for double guesses (just don't have any color in these cases)
+// TO DO: Async/Await or Promise to create delay when adding green to all squares in correct guess
 
 // 1. DEFINE VARIABLES
 
@@ -59,6 +57,7 @@ let randomIndex = Math.floor(Math.random() * wordBank.length);
 
 let hiddenWord = wordBank[randomIndex].toLowerCase(); // pick random word
 // let hiddenWord = "alarm";
+console.log(hiddenWord);
 
 let guessedWord = ""; // Blank starting guess
 
@@ -224,6 +223,8 @@ function resetGame() {
   let boxes = document.querySelectorAll(".box");
   boxes.forEach((item) => {
     item.innerHTML = ""; // clears the previous guesses from the board
+    item.classList.add("green");
+
     item.classList.remove("green", "yellow", "orange"); // removes background colors form boxes on the board
   });
   guessedWord = ""; // resets the current guess to ""
