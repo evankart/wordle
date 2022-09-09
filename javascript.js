@@ -80,6 +80,26 @@ const enterKey = document.querySelector(".enterKey"); // enter key
 
 // 2. ADD EVENT LISTENERS
 
+// logs computer keyboard input
+window.addEventListener(
+  "keydown",
+  function (e) {
+    console.log(`${e.key}`);
+    for (i = 0; i < letterKeys.length; i++) {
+      if (`${e.key}` == letterKeys[i].innerHTML.toLowerCase()) {
+        console.log(`${e.key} is a match!`);
+        letterKeys[i].click();
+      }
+    }
+    if (`${e.key}` == "Backspace") {
+      deleteLetter();
+    } else if (`${e.key}` == "Enter") {
+      checkGuess();
+    }
+  },
+  false
+);
+
 // When a letter is pressed (and current guess is <5 chars) find the next open box, add the letter to it, darken the key bg color, and add the letter to the current guess.
 letterKeys.forEach((item) => {
   item.addEventListener("click", (event) => {
