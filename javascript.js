@@ -51,12 +51,14 @@ const wordBank = [
 
 // TO DO: Async/Await or Promise to create delay when adding green to all squares in correct guess
 
+// TO DO: only update keyboard colors when the word is guessed
+
 // 1. DEFINE VARIABLES
 
 let randomIndex = Math.floor(Math.random() * wordBank.length);
 
-let hiddenWord = wordBank[randomIndex].toLowerCase(); // pick random word
-// let hiddenWord = "alarm";
+// let hiddenWord = wordBank[randomIndex].toLowerCase(); // pick random word
+let hiddenWord = "alarm";
 console.log(hiddenWord);
 
 let guessedWord = ""; // Blank starting guess
@@ -86,7 +88,6 @@ window.addEventListener(
     console.log(`${e.key}`);
     for (i = 0; i < letterKeys.length; i++) {
       if (`${e.key}` == letterKeys[i].innerHTML.toLowerCase()) {
-        console.log(`${e.key} is a match!`);
         letterKeys[i].click();
       }
     }
@@ -106,7 +107,6 @@ letterKeys.forEach((item) => {
       // only allow adding letters if the word is less than 5 letters long
       targetBox = document.querySelector(".box:empty"); // sets the target to the next open box
       targetBox.innerHTML = item.innerHTML; // places selected letter in the target box
-      item.classList.add("dark");
       guessedLetters.push(item.innerHTML);
       console.log(guessedLetters);
       guessedWord = guessedWord.concat(item.innerHTML.toLowerCase()); // adds letter to the end of current guess
@@ -127,6 +127,31 @@ deleteKey.addEventListener("click", deleteLetter);
 function checkGuess() {
   if (guessedWord.length == 5) {
     // Checks that guess is 5 letters long
+
+    for (const y of guessedLetters) {
+      if (guessedLetters.indexOf(y) != hiddenWord.indexOf(y)) {
+        console.log("guess index: " + guessedWord.indexOf(y));
+        console.log("hidden index: " + hiddenWord.indexOf(y));
+        console.log(y + " in the same place!");
+        letterKeys.forEach((item) => {});
+      }
+      letterKeys.forEach((item) => {
+        // if (guessedLetters.indexOf(y) == hiddenWord.indexOf(y)) {
+        //   console.log("guess index: " + guessedWord.indexOf(y));
+        //   console.log("hidden index: " + hiddenWord.indexOf(y));
+        //   console.log(y + " in the same place!");
+        // }
+
+        if (item.innerHTML == y && !hiddenWord.includes(y.toLowerCase())) {
+          item.classList.add("dark");
+        }
+
+        if (item.innerHTML == y && hiddenWord.includes(y.toLowerCase())) {
+          item.classList.add("green");
+        }
+      });
+    }
+
     if (guessedWord.toLowerCase() === hiddenWord.toLowerCase()) {
       // Check if the guessed word is correct
       alert("YESSS!!!");
@@ -165,16 +190,16 @@ function addColors() {
   let spaces = row.children;
 
   for (let k = 0; k < spaces.length; k++) {
-    console.log("Letter: " + spaces[k].innerHTML);
-    console.log("Guessed Word: " + guessedWord);
+    // console.log("Letter: " + spaces[k].innerHTML);
+    // console.log("Guessed Word: " + guessedWord);
 
     let hiddenInstances =
       hiddenWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
-    console.log("Hidden Instances: " + hiddenInstances);
+    // console.log("Hidden Instances: " + hiddenInstances);
 
     let guessInstances =
       guessedWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
-    console.log("Guess Instances: " + guessInstances);
+    // console.log("Guess Instances: " + guessInstances);
 
     if (spaces[k].innerHTML != "") {
       if (spaces[k].innerHTML.toLowerCase() == hiddenWord[j]) {
@@ -225,7 +250,7 @@ function resetGame() {
     item.innerHTML = ""; // clears the previous guesses from the board
     item.classList.add("green");
 
-    item.classList.remove("green", "yellow", "orange"); // removes background colors form boxes on the board
+    item.classList.remove("green", "yellow"); // removes background colors form boxes on the board
   });
   guessedWord = ""; // resets the current guess to ""
   randomIndex = Math.floor(Math.random() * wordBank.length);
@@ -234,7 +259,7 @@ function resetGame() {
   currentRow = 1; // Starting in row #1
   rowID = "row" + currentRow;
   letterKeys.forEach((item) => {
-    item.classList.remove("dark"); // resets keyboard background color
+    item.classList.remove("dark", "green", "yellow"); // resets keyboard background color
   });
   guessedLetters = [];
 }
@@ -248,6 +273,7 @@ function deleteLetter() {
   }
   console.log(guessedLetters);
 
+  // removes the dark styling from the letter key dark
   for (n of document.querySelectorAll(".letterKey")) {
     if (n.innerHTML.toLowerCase() == targetBox.innerHTML.toLowerCase()) {
       n.classList.remove("dark");
