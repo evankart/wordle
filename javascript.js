@@ -12980,7 +12980,33 @@ const wordLists = {
 
 // --------- TO DO ------------
 
-// TO DO: Async/Await or Promise to create delay when adding green to all squares in correct guess
+// TO DO: Currently, letters turn blue if too many instances of the letter in the guess.
+// instead, the first instance should turn yellow, and the next stay black.
+////For each guess, create an object that contains the letters guessed and it's frequency.
+////
+
+// const guessedLetterList = {
+//   a: 2,
+//   l: 1,
+//   r: 1,
+//   m: 1,
+// };
+// console.log(guessedLetterList);
+
+// const hiddenLetterList = {
+//   b: 1,
+//   r: 1,
+//   e: 1,
+//   a: 1,
+//   k: 1,
+// };
+// console.log(hiddenLetterList);
+
+// for (let val in guessedLetterList) {
+//   if (guessedLetterList[val] === hiddenLetterList[val]) {
+//     console.log("Val: " + val);
+//   }
+// }
 
 // 1. DEFINE VARIABLES
 
@@ -13057,7 +13083,8 @@ function checkGuess() {
   if (
     (guessedWord.length == 5 &&
       wordLists.wordBank.indexOf(guessedWord) !== -1) ||
-    (guessedWord.length == 5 && legalWords.indexOf(guessedWord) !== -1)
+    (guessedWord.length == 5 &&
+      wordLists.legalWords.indexOf(guessedWord) !== -1)
   ) {
     // Checks that guess is 5 letters long
 
@@ -13141,7 +13168,7 @@ function addColors() {
           .includes(guessedLetters[y].toLowerCase()) &&
         guessedLetters[y].toLowerCase() != hiddenWord[y].toLowerCase()
       ) {
-        console.log(item.classList);
+        // console.log(item.classList);
         item.classList.add("yellow");
       }
     });
@@ -13158,44 +13185,32 @@ function addColors() {
 
     let hiddenInstances =
       hiddenWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
-    // console.log("Hidden Instances: " + hiddenInstances);
+    console.log(
+      "Hidden Instances of " + spaces[k].innerHTML + ": " + hiddenInstances
+    );
 
     let guessInstances =
       guessedWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
-    // console.log("Guess Instances: " + guessInstances);
+    console.log(
+      "Guess Instances of " + spaces[k].innerHTML + ": " + guessInstances
+    );
 
     if (spaces[k].innerHTML != "") {
       if (spaces[k].innerHTML.toLowerCase() == hiddenWord[j]) {
+        // if letter in the correct place, green
         spaces[k].classList.add("green");
       } else if (
         hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
         hiddenInstances >= guessInstances
+        // if hidden word has  same number or more of the letter, yellow
       ) {
-        console.log(
-          spaces[k].innerHTML +
-            " appears " +
-            guessInstances +
-            " times in your guess"
-        );
-        console.log(
-          spaces[k].innerHTML +
-            " appears " +
-            hiddenInstances +
-            " times in the hidden word"
-        );
-
         spaces[k].classList.add("yellow");
-
-        // if (yellow < hiddenInstances) {
-        //   spaces[k].classList.add("yellow");
-        //   yellow++;
-        //   console.log(yellow);
-        // }
       } else if (
         hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
-        guessInstances - hiddenInstances > 0
+        hiddenInstances < guessInstances
+        // if the guess has more of a letter than the hidden word does, only make the first one yellow
       ) {
-        spaces[k].classList.add("clear");
+        spaces[k].classList.add("blue");
       }
     }
     j++;
@@ -13229,16 +13244,18 @@ function resetGame() {
 
 // FUNCTION: delete the last letter from your guess
 function deleteLetter() {
-  letterIndex = guessedLetters.indexOf(targetBox.innerHTML);
-  if (letterIndex > -1) {
-    // only splice array when item is found
-    guessedLetters.splice(letterIndex, 1); // 2nd parameter means remove one item only
+  if (guessedLetters.length > 0) {
+    letterIndex = guessedLetters.indexOf(targetBox.innerHTML);
+    if (letterIndex > -1) {
+      // only splice array when item is found
+      guessedLetters.splice(letterIndex, 1); // 2nd parameter means remove one item only
+    }
+    console.log(guessedLetters);
+
+    targetBox.innerHTML = ""; // delete the last letter added
+    targetBox = targetBox.previousElementSibling; // changes the target box to previous letter added
+    guessedWord = guessedWord.slice(0, -1); // keeps all but the last letter of your guess
+
+    // console.log(guessedWord);
   }
-  console.log(guessedLetters);
-
-  targetBox.innerHTML = ""; // delete the last letter added
-  targetBox = targetBox.previousElementSibling; // changes the target box to previous letter added
-  guessedWord = guessedWord.slice(0, -1); // keeps all but the last letter of your guess
-
-  // console.log(guessedWord);
 }

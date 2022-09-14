@@ -85,6 +85,10 @@ h1 {
   background-color: none;
 }
 
+.blue {
+  background-color: rgb(93, 139, 255);
+}
+
 .dark {
   background-color: #3a3a3c;
 }
