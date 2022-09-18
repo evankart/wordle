@@ -12980,33 +12980,7 @@ const wordLists = {
 
 // --------- TO DO ------------
 
-// TO DO: Currently, letters turn blue if too many instances of the letter in the guess.
-// instead, the first instance should turn yellow, and the next stay black.
-////For each guess, create an object that contains the letters guessed and it's frequency.
-////
-
-// const guessedLetterList = {
-//   a: 2,
-//   l: 1,
-//   r: 1,
-//   m: 1,
-// };
-// console.log(guessedLetterList);
-
-// const hiddenLetterList = {
-//   b: 1,
-//   r: 1,
-//   e: 1,
-//   a: 1,
-//   k: 1,
-// };
-// console.log(hiddenLetterList);
-
-// for (let val in guessedLetterList) {
-//   if (guessedLetterList[val] === hiddenLetterList[val]) {
-//     console.log("Val: " + val);
-//   }
-// }
+// TO DO: First instance now turns blue and subsequent insances stay black. But if a green comes after a blue, the blue should stay black instead.
 
 // 1. DEFINE VARIABLES
 
@@ -13018,13 +12992,27 @@ console.log(hiddenWord);
 
 let guessedWord = ""; // Blank starting guess
 
-let guessedLetters = [];
+let guessedLetters = []; // Blank array of guessed letters
+let guessDict = {}; // Blank dictionary of guessed letters
+let hiddenDict = {}; // Blank dictionary of hidden letters
+hiddenWordUPPER = hiddenWord.toUpperCase(); // uppercase version of hidden word
 
-let guesses = 0; // Staerting at guess number 0
+// Function fills out the full dictionary for hidden letters
+function buildHiddenDict(hiddenWordUPPER) {
+  for (l in hiddenWordUPPER) {
+    hiddenDict[hiddenWordUPPER[l]] = 0;
+  }
+  for (l in hiddenWordUPPER) {
+    hiddenDict[hiddenWordUPPER[l]] += 1;
+  }
+  console.log(hiddenDict);
+}
+buildHiddenDict(hiddenWordUPPER);
+
+let guesses = 0; // Starting at guess count of 0
 
 let currentRow = 1; // Starting in row #1
 let rowID = "row" + currentRow;
-console.log("Row ID: " + rowID);
 
 const boxes = document.querySelectorAll(".box"); // boxes = all of the boxes on the board
 
@@ -13040,7 +13028,6 @@ const enterKey = document.querySelector(".enterKey"); // enter key
 window.addEventListener(
   "keydown",
   function (e) {
-    console.log(`Key Pressed: ${e.key}`);
     for (i = 0; i < letterKeys.length; i++) {
       if (`${e.key}` == letterKeys[i].innerHTML.toLowerCase()) {
         letterKeys[i].click();
@@ -13063,9 +13050,7 @@ letterKeys.forEach((item) => {
       targetBox = document.querySelector(".box:empty"); // sets the target to the next open box
       targetBox.innerHTML = item.innerHTML; // places selected letter in the target box
       guessedLetters.push(item.innerHTML);
-      console.log(guessedLetters);
       guessedWord = guessedWord.concat(item.innerHTML.toLowerCase()); // adds letter to the end of current guess
-      console.log(guessedWord);
     }
   });
 });
@@ -13080,36 +13065,25 @@ deleteKey.addEventListener("click", deleteLetter);
 
 // FUNCTION: Check if the word is correct when clicking enter
 function checkGuess() {
+  console.log("guessWord " + guessedWord);
+  console.log("guessedLetters: " + guessedLetters);
+  guessDict = {};
+  for (y in guessedLetters) {
+    guessDict[guessedLetters[y]] = 0;
+  }
   if (
     (guessedWord.length == 5 &&
       wordLists.wordBank.indexOf(guessedWord) !== -1) ||
     (guessedWord.length == 5 &&
       wordLists.legalWords.indexOf(guessedWord) !== -1)
   ) {
-    // Checks that guess is 5 letters long
+    // Checks that guess is 5 letters long and included in set of legal words
 
-    console.log(wordLists.wordBank.indexOf(guessedWord));
-
+    // if the guessed letter is not in the word, turn the letter key dark
     for (const y of guessedLetters) {
-      if (guessedLetters.indexOf(y) != hiddenWord.indexOf(y)) {
-        // console.log("guess index: " + guessedWord.indexOf(y));
-        // console.log("hidden index: " + hiddenWord.indexOf(y));
-        // console.log(y + " in the same place!");
-        letterKeys.forEach((item) => {});
-      }
       letterKeys.forEach((item) => {
-        // if (guessedLetters.indexOf(y) == hiddenWord.indexOf(y)) {
-        //   console.log("guess index: " + guessedWord.indexOf(y));
-        //   console.log("hidden index: " + hiddenWord.indexOf(y));
-        //   console.log(y + " in the same place!");
-        // }
-
         if (item.innerHTML == y && !hiddenWord.includes(y.toLowerCase())) {
           item.classList.add("dark");
-        }
-
-        if (item.innerHTML == y && hiddenWord.includes(y.toLowerCase())) {
-          // item.classList.add("green");
         }
       });
     }
@@ -13119,20 +13093,16 @@ function checkGuess() {
       alert("YESSS!!!");
       resetGame();
     } else {
-      console.log("Try another guess");
       guesses++;
       addColors();
       guessedWord = "";
       currentRow++;
-      console.log("Current Row: " + currentRow);
       rowID = "row" + currentRow;
-      console.log("Row ID: " + rowID);
       guessedLetters = [];
+      guessDict = {};
     }
   } else {
     alert("Please enter a legal five letter word.");
-
-    console.log("Please enter a legal five letter word."); // If guess is not 5 letters long, promts the user
   }
 
   if (guesses >= 6) {
@@ -13146,13 +13116,17 @@ function checkGuess() {
 //FUNCTION: Change relevant squares to green or yellow
 function addColors() {
   let j = 0;
-  let yellow = 0;
 
-  console.log("You Guessed: " + guessedWord);
-  console.log(guessedLetters[1].toLowerCase());
+  console.log(guessDict);
 
+  // ADD COLORS TO KEYS
   for (y in guessedLetters) {
-    console.log(guessedLetters[y].toLowerCase());
+    guessDict = {};
+    for (z in guessedLetters) {
+      guessDict[guessedLetters[z]] = 0;
+    }
+    console.log("Current Letter: " + guessedLetters[y]);
+
     letterKeys.forEach((item) => {
       if (
         item.innerHTML
@@ -13168,56 +13142,66 @@ function addColors() {
           .includes(guessedLetters[y].toLowerCase()) &&
         guessedLetters[y].toLowerCase() != hiddenWord[y].toLowerCase()
       ) {
-        // console.log(item.classList);
         item.classList.add("yellow");
       }
     });
-  }
 
-  row = document.getElementById(rowID);
-  console.log("Current Row: " + currentRow);
+    row = document.getElementById(rowID);
 
-  let spaces = row.children;
+    let spaces = row.children;
 
-  for (let k = 0; k < spaces.length; k++) {
-    // console.log("Letter: " + spaces[k].innerHTML);
-    // console.log("Guessed Word: " + guessedWord);
+    // ADD COLORS TO SQUARES
 
-    let hiddenInstances =
-      hiddenWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
-    console.log(
-      "Hidden Instances of " + spaces[k].innerHTML + ": " + hiddenInstances
-    );
+    for (let k = 0; k < spaces.length; k++) {
+      // console.log("Letter: " + spaces[k].innerHTML);
+      // console.log("Guessed Word: " + guessedWord);
 
-    let guessInstances =
-      guessedWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
-    console.log(
-      "Guess Instances of " + spaces[k].innerHTML + ": " + guessInstances
-    );
+      guessDict[spaces[k].innerHTML] += 1;
 
-    if (spaces[k].innerHTML != "") {
-      if (spaces[k].innerHTML.toLowerCase() == hiddenWord[j]) {
-        // if letter in the correct place, green
-        spaces[k].classList.add("green");
-      } else if (
-        hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
-        hiddenInstances >= guessInstances
-        // if hidden word has  same number or more of the letter, yellow
-      ) {
-        spaces[k].classList.add("yellow");
-      } else if (
-        hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
-        hiddenInstances < guessInstances
-        // if the guess has more of a letter than the hidden word does, only make the first one yellow
-      ) {
-        spaces[k].classList.add("blue");
+      let hiddenInstances =
+        hiddenWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
+      // console.log(
+      //   "Hidden Instances of " + spaces[k].innerHTML + ": " + hiddenInstances
+      // );
+
+      let guessInstances =
+        guessedWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
+      // console.log(
+      //   "Guess Instances of " + spaces[k].innerHTML + ": " + guessInstances
+      // );
+
+      if (spaces[k].innerHTML != "") {
+        if (spaces[k].innerHTML.toLowerCase() == hiddenWord[j]) {
+          // if letter in the correct place, green
+          spaces[k].classList.add("green");
+        } else if (
+          hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
+          hiddenInstances >= guessInstances
+          // if hidden word has  same number or more of the letter, yellow
+        ) {
+          spaces[k].classList.add("yellow");
+        } else if (
+          hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
+          hiddenInstances < guessInstances
+          // if the guess has more of a letter than the hidden word does, only make the first one yellow
+        ) {
+          // if num instances in the hidden word is less than the instances in the guess dict, add yellow
+
+          if (guessDict[guessedLetters[y]] <= hiddenDict[guessedLetters[y]]) {
+            spaces[k].classList.add("blue");
+          } else if (guessDict[guessedLetters[y]] <= hiddenInstances) {
+            // spaces[k].classList.add("yellow");
+          }
+        }
+      }
+
+      j++;
+      // resets j count to 0 once it reaches 5
+      if (j == 5) {
+        j = 0;
       }
     }
-    j++;
-    // resets j count to 0 once it reaches 5
-    if (j == 5) {
-      j = 0;
-    }
+    console.log(guessDict, hiddenDict);
   }
 }
 
