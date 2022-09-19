@@ -39,6 +39,10 @@ h1 {
   font-size: 32px;
 }
 
+.space.shake {
+  animation: shake 250 ease-in-out;
+}
+
 .keyboard {
   margin-top: 3vh;
   align-self: flex-end;
@@ -73,16 +77,16 @@ h1 {
   width: 70px;
 }
 
-.yellow {
-  background-color: rgb(238, 204, 37);
-}
-
 .clear {
   background-color: none;
 }
 
 .blue {
   background-color: rgb(93, 139, 255);
+}
+
+.yellow {
+  background-color: rgb(238, 204, 37);
 }
 
 .dark {
