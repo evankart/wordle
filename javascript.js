@@ -13094,7 +13094,7 @@ function checkGuess() {
       resetGame();
     } else {
       guesses++;
-      addColors();
+      updateKeyColors();
       guessedWord = "";
       currentRow++;
       rowID = "row" + currentRow;
@@ -13114,17 +13114,14 @@ function checkGuess() {
 // TO DO: Split up board and guesses by rows
 
 //FUNCTION: Change relevant squares to green or yellow
-function addColors() {
-  let j = 0;
-
+function updateKeyColors() {
   console.log(guessDict);
 
   // ADD COLORS TO KEYS
+  guessDict = {};
   for (y in guessedLetters) {
-    guessDict = {};
-    for (z in guessedLetters) {
-      guessDict[guessedLetters[z]] = 0;
-    }
+    guessDict[guessedLetters[y]] = 0;
+
     console.log("Current Letter: " + guessedLetters[y]);
 
     letterKeys.forEach((item) => {
@@ -13140,69 +13137,105 @@ function addColors() {
         item.innerHTML
           .toLowerCase()
           .includes(guessedLetters[y].toLowerCase()) &&
-        guessedLetters[y].toLowerCase() != hiddenWord[y].toLowerCase()
+        guessedLetters[y].toLowerCase() != hiddenWord[y].toLowerCase() &&
+        !item.classList.contains("green")
       ) {
         item.classList.add("yellow");
       }
     });
-
-    row = document.getElementById(rowID);
-
-    let spaces = row.children;
-
-    // ADD COLORS TO SQUARES
-
-    for (let k = 0; k < spaces.length; k++) {
-      // console.log("Letter: " + spaces[k].innerHTML);
-      // console.log("Guessed Word: " + guessedWord);
-
-      guessDict[spaces[k].innerHTML] += 1;
-
-      let hiddenInstances =
-        hiddenWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
-      // console.log(
-      //   "Hidden Instances of " + spaces[k].innerHTML + ": " + hiddenInstances
-      // );
-
-      let guessInstances =
-        guessedWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
-      // console.log(
-      //   "Guess Instances of " + spaces[k].innerHTML + ": " + guessInstances
-      // );
-
-      if (spaces[k].innerHTML != "") {
-        if (spaces[k].innerHTML.toLowerCase() == hiddenWord[j]) {
-          // if letter in the correct place, green
-          spaces[k].classList.add("green");
-        } else if (
-          hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
-          hiddenInstances >= guessInstances
-          // if hidden word has  same number or more of the letter, yellow
-        ) {
-          spaces[k].classList.add("yellow");
-        } else if (
-          hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
-          hiddenInstances < guessInstances
-          // if the guess has more of a letter than the hidden word does, only make the first one yellow
-        ) {
-          // if num instances in the hidden word is less than the instances in the guess dict, add yellow
-
-          if (guessDict[guessedLetters[y]] <= hiddenDict[guessedLetters[y]]) {
-            spaces[k].classList.add("blue");
-          } else if (guessDict[guessedLetters[y]] <= hiddenInstances) {
-            // spaces[k].classList.add("yellow");
-          }
-        }
-      }
-
-      j++;
-      // resets j count to 0 once it reaches 5
-      if (j == 5) {
-        j = 0;
-      }
-    }
-    console.log(guessDict, hiddenDict);
   }
+  updateSquareColors();
+}
+
+function updateSquareColors() {
+  // ADD COLORS TO SQUARES
+  row = document.getElementById(rowID);
+  let spaces = row.children;
+  let j = 0;
+
+  // for each square
+  for (let k = 0; k < spaces.length; k++) {
+    let currentSquare = spaces[k];
+    let currentLetter = currentSquare.innerHTML;
+    console.log(
+      "Current square: ",
+      currentSquare,
+      "Current letter: " + currentLetter
+    );
+    guessDict[currentSquare.innerHTML] += 1;
+    if (currentSquare.innerHTML === hiddenWordUPPER[k]) {
+      currentSquare.classList.add("green");
+    } else if (
+      hiddenWordUPPER.includes(currentSquare.innerHTML) &&
+      guessDict[currentLetter] <= hiddenDict[currentLetter]
+    ) {
+      spaces[k].classList.add("yellow");
+    }
+
+    j++;
+    // resets j count to 0 once it reaches 5
+    if (j == 5) {
+      j = 0;
+    }
+  }
+  console.log(guessDict);
+
+  // if guesses letter === hidden letter - add green class
+
+  // for (let k = 0; k < spaces.length; k++) {
+  //   console.log(
+  //     "Guess Dict: " + guessedLetters[y],
+  //     guessDict,
+  //     "Hidden Dict: " + guessedLetters[y],
+  //     hiddenDict
+  //   );
+
+  //   guessDict[spaces[k].innerHTML] += 1;
+
+  //   console.log(
+  //     "Guess Dict: " + guessedLetters[y],
+  //     guessDict,
+  //     "Hidden Dict: " + guessedLetters[y],
+  //     hiddenDict
+  //   );
+
+  //   let hiddenInstances =
+  //     hiddenWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
+
+  //   let guessInstances =
+  //     guessedWord.split(spaces[k].innerHTML.toLowerCase()).length - 1;
+
+  //   if (spaces[k].innerHTML != "") {
+  //     if (spaces[k].innerHTML.toLowerCase() == hiddenWord[j]) {
+  //       // if letter in the correct place, green
+  //       spaces[k].classList.add("green");
+  //     } else if (
+  //       hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
+  //       hiddenInstances >= guessInstances
+  //       // if hidden word has  same number or more of the letter, yellow
+  //     ) {
+  //       spaces[k].classList.add("yellow");
+  //     } else if (
+  //       hiddenWord.includes(spaces[k].innerHTML.toLowerCase()) &&
+  //       hiddenInstances < guessInstances
+  //       // if the guess has more of a letter than the hidden word does, only make the first one yellow
+  //     ) {
+  //       // if num instances in the hidden word is less than the instances in the guess dict, add yellow
+
+  //       if (guessDict[guessedLetters[y]] <= hiddenDict[guessedLetters[y]]) {
+  //         spaces[k].classList.add("blue");
+  //       } else if (guessDict[guessedLetters[y]] <= hiddenInstances) {
+  //         // spaces[k].classList.add("yellow");
+  //       }
+  //     }
+  //   }
+
+  //   j++;
+  //   // resets j count to 0 once it reaches 5
+  //   if (j == 5) {
+  //     j = 0;
+  //   }
+  // }
 }
 
 // FUNCTION: Clear the board and reset the game, then pick a new hidden word
@@ -13212,7 +13245,7 @@ function resetGame() {
     item.innerHTML = ""; // clears the previous guesses from the board
     item.classList.add("green");
 
-    item.classList.remove("green", "yellow"); // removes background colors form boxes on the board
+    item.classList.remove("green", "yellow", "blue"); // removes background colors form boxes on the board
   });
   guessedWord = ""; // resets the current guess to ""
   randomIndex = Math.floor(Math.random() * wordLists.wordBank.length);
