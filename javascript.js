@@ -13102,15 +13102,16 @@ function updateBoxColors() {
     let guessLtrCount = guessString.split(currentLetter).length - 1;
     let hiddenLtrCount = hiddenString.split(currentLetter).length - 1;
 
-    if (tally[currentLetter] < hiddenLtrCount) {
-      if (currentLetter === hiddenString[k]) {
-        currentSquare.classList.add("green");
-      } else if (hiddenString.includes(currentLetter)) {
-        currentSquare.classList.add("yellow");
+    if (hiddenString.includes(currentLetter)) {
+      if (tally[currentLetter] < hiddenLtrCount) {
+        if (currentLetter === hiddenString[k]) {
+          currentSquare.classList.add("green");
+        } else {
+          currentSquare.classList.add("yellow");
+        }
+      } else {
+        currentSquare.classList.add("gray");
       }
-    } else if (hiddenLtrCount === 0) {
-      //if letter not in word, make box gray
-      currentSquare.classList.add("gray");
     }
 
     tally[currentLetter]++;
