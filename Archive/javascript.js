@@ -12977,3 +12977,276 @@ const wordLists = {
     "zymic",
   ],
 };
+
+// --------- TO DO ------------
+
+// TO DO: First instance now turns blue and subsequent insances stay black. But if a green comes after a blue, the blue should stay black instead.
+
+// 1. DEFINE VARIABLES
+
+let randomIndex = Math.floor(Math.random() * wordLists.wordBank.length);
+
+let hiddenString = wordLists.wordBank[randomIndex].toLowerCase(); // pick random word
+// let hiddenString = "tenet";
+console.log(hiddenString);
+let hiddenArray = []; // Blank array of hidden letter
+let hiddenDict = {}; // Blank dictionary of hidden letters
+
+let guessString = ""; // Blank starting guess
+let guessArray = []; // Blank array of guessed letters
+let guessDict = {}; // Blank dictionary of guessed letters
+
+// Function fills out the full dictionary for hidden letters
+function buildHiddenDict(hiddenString) {
+  for (l in hiddenString) {
+    hiddenDict[hiddenString[l].toUpperCase()] = 0;
+  }
+  for (l in hiddenString) {
+    hiddenDict[hiddenString[l].toUpperCase()] += 1;
+    hiddenArray.push(hiddenString[l].toUpperCase());
+  }
+  console.log("hiddenDict", hiddenDict);
+  console.log("hiddenArray", hiddenArray);
+}
+buildHiddenDict(hiddenString);
+
+let guesses = 0; // Starting at guess count of 0
+
+let currentRow = 1; // Starting in row #1
+let rowID = "row" + currentRow;
+
+const boxes = document.querySelectorAll(".box"); // boxes = all of the boxes on the board
+const letterKeys = document.querySelectorAll(".letterKey"); // keys = all of the keyboard keys
+const deleteKey = document.querySelector(".deleteKey"); // deleteKey
+const enterKey = document.querySelector(".enterKey"); // enter key
+
+// 2. ADD EVENT LISTENERS
+
+// logs computer keyboard input
+window.addEventListener(
+  "keydown",
+  function (e) {
+    for (i = 0; i < letterKeys.length; i++) {
+      if (`${e.key}` == letterKeys[i].innerHTML.toLowerCase()) {
+        letterKeys[i].click();
+      }
+    }
+    if (`${e.key}` == "Backspace") {
+      deleteLetter();
+    } else if (`${e.key}` == "Enter") {
+      checkGuess();
+    }
+  },
+  false
+);
+
+// When a letter is pressed (and current guess is <5 chars) find the next open box, add the letter to it, darken the key bg color, and add the letter to the current guess.
+letterKeys.forEach((item) => {
+  item.addEventListener("click", (event) => {
+    if (guessArray.length < 5) {
+      // only allow adding letters if the word is less than 5 letters long
+      targetBox = document.querySelector(".box:empty"); // sets the target to the next open box
+      targetBox.innerHTML = item.innerHTML; // places selected letter in the target box
+      guessArray.push(item.innerHTML);
+      guessString = guessString.concat(item.innerHTML.toLowerCase()); // adds letter to the end of current guess
+    }
+  });
+});
+
+// When enter key is pressed - run the checkGuess function
+enterKey.addEventListener("click", checkGuess);
+
+// When delete key is pressed - run the deleteLetter function
+deleteKey.addEventListener("click", deleteLetter);
+
+// 3. DEFINE FUNCTIONS
+
+// FUNCTION: Check if the word is correct when clicking enter
+function checkGuess() {
+  console.log("guessString:", guessString);
+  console.log("guessArray:", guessArray);
+  guessDict = {};
+  for (y in guessArray) {
+    guessDict[guessArray[y]] = 0;
+    hiddenDict[hiddenArray[y]] = 0;
+  }
+  for (z in guessArray) {
+    guessDict[guessArray[z]]++;
+    hiddenDict[hiddenArray[y]]++;
+  }
+  console.log("checkGuess guessDict", guessDict);
+  console.log("checkGuess hiddenDict", hiddenDict);
+
+  if (
+    (guessArray.length == 5 &&
+      wordLists.wordBank.indexOf(guessString) !== -1) ||
+    (guessArray.length == 5 && wordLists.legalWords.indexOf(guessString) !== -1)
+  ) {
+    // Checks that guess is 5 letters long and included in set of legal words
+
+    // if the guessed letter is not in the word, turn the letter key dark
+    for (const y of guessArray) {
+      letterKeys.forEach((item) => {
+        if (item.innerHTML == y && !hiddenString.includes(y.toLowerCase())) {
+          item.classList.add("dark");
+        }
+      });
+    }
+
+    if (guessString === hiddenString) {
+      // Check if the guessed word is correct
+      alert("YESSS!!!");
+      resetGame();
+    } else {
+      guesses++;
+      updateKeyColors();
+      guessString = "";
+      guessArray = [];
+      currentRow++;
+      rowID = "row" + currentRow;
+    }
+  } else {
+    alert("Please enter a legal five letter word.");
+  }
+
+  if (guesses >= 6) {
+    alert("Better luck next time!");
+    resetGame();
+  }
+}
+
+// TO DO: Split up board and guesses by rows
+
+//FUNCTION: Change relevant squares to green or yellow
+function updateKeyColors() {
+  // ADD COLORS TO KEYS
+  for (y in guessArray) {
+    letterKeys.forEach((item) => {
+      if (
+        item.innerHTML.includes(guessArray[y]) &&
+        guessString[y] === hiddenString[y]
+      ) {
+        // item.classList.remove("yellow");
+        item.classList.add("green");
+      } else if (
+        item.innerHTML.includes(guessArray[y]) &&
+        guessString[y] != hiddenString[y] &&
+        !item.classList.contains("green")
+      ) {
+        item.classList.add("yellow");
+      }
+    });
+  }
+  updateSquareColors();
+}
+
+function updateSquareColors() {
+  // ADD COLORS TO SQUARES
+  row = document.getElementById(rowID);
+  let spaces = row.children;
+  let j = 0;
+
+  for (let k = 0; k < spaces.length; k++) {
+    let currentSquare = spaces[k];
+    let currentLetter = currentSquare.innerHTML;
+    if (currentLetter === hiddenArray[k]) {
+      currentSquare.classList.add("green");
+      console.log("----added green to", currentLetter);
+    }
+  }
+
+  // for each square
+  for (let k = 0; k < spaces.length; k++) {
+    let currentSquare = spaces[k];
+    let currentLetter = currentSquare.innerHTML;
+
+    console.log("Current square: ", currentSquare);
+    console.log("Current letter: " + currentLetter);
+
+    // if (currentLetter === hiddenArray[k]) {
+    //   currentSquare.classList.add("green");
+    //   console.log("----added green to", currentLetter);
+    //   hiddenDict[currentLetter]--;
+    // } else
+    if (
+      hiddenArray.includes(currentLetter) &&
+      guessDict[currentLetter] <= hiddenDict[currentLetter]
+    ) {
+      currentSquare.classList.add("yellow");
+      console.log("----added yellow to", currentLetter);
+      hiddenDict[currentLetter]--;
+    } else if (
+      hiddenArray.includes(currentLetter) &&
+      guessDict[currentLetter] == hiddenDict[currentLetter] + 1
+    ) {
+      currentSquare.classList.add("yellow");
+      console.log("----added blue to", currentLetter);
+      console.log("guessDict", currentLetter, guessDict[currentLetter]);
+      console.log(hiddenDict[currentLetter]);
+      console.log(guessDict);
+      hiddenDict[currentLetter]++;
+      console.log(guessDict);
+      console.log("guessDict", currentLetter, guessDict[currentLetter]);
+      console.log(hiddenDict[currentLetter]);
+    }
+    hiddenDict[currentLetter]--;
+
+    j++;
+    // resets j count to 0 once it reaches 5
+    if (j == 5) {
+      j = 0;
+    }
+  }
+  console.log(guessDict);
+}
+
+// FUNCTION: Clear the board and reset the game, then pick a new hidden word
+function resetGame() {
+  let boxes = document.querySelectorAll(".box");
+  boxes.forEach((item) => {
+    item.innerHTML = ""; // clears the previous guesses from the board
+    item.classList.add("green");
+
+    item.classList.remove("green", "yellow", "blue"); // removes background colors form boxes on the board
+  });
+  guessString = ""; // resets the current guess to ""
+  randomIndex = Math.floor(Math.random() * wordLists.wordBank.length);
+  hiddenString = wordLists.wordBank[randomIndex].toLowerCase(); // changes the hidden word to a new word
+  guesses = 0; // resets the number of guesses to zero for new round
+  currentRow = 1; // Starting in row #1
+  rowID = "row" + currentRow;
+  letterKeys.forEach((item) => {
+    item.classList.remove("dark", "green", "yellow"); // resets keyboard background color
+  });
+  guessArray = [];
+}
+
+// FUNCTION: delete the last letter from your guess
+function deleteLetter() {
+  if (guessArray.length > 0) {
+    letterIndex = guessArray.indexOf(targetBox.innerHTML);
+    if (letterIndex > -1) {
+      // only splice array when item is found
+      guessArray.splice(letterIndex, 1); // 2nd parameter means remove one item only
+    }
+
+    targetBox.innerHTML = ""; // delete the last letter added
+    targetBox = targetBox.previousElementSibling; // changes the target box to previous letter added
+    guessString = guessString.slice(0, -1); // keeps all but the last letter of your guess
+
+    // console.log(guessString);
+  }
+}
+
+function shakeSpaces(spaces) {
+  spaces.forEach((space) => {
+    space.classList.add("shake");
+    space.addEventListener(
+      "animationend",
+      () => {
+        space.classList.remove("shake");
+      },
+      { once: true }
+    );
+  });
+}
