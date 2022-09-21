@@ -13028,7 +13028,7 @@ window.addEventListener(
       deleteLetter();
     } else if (`${e.key}` == "Enter") {
       if (guessString.length === 5) {
-        checkGuess();
+        validateGuess();
       } else {
         alert("Please enter a five letter word.");
       }
@@ -13037,8 +13037,8 @@ window.addEventListener(
   false
 );
 
-//--- Run the checkGuess function when Enter is pressed ---//
-enterKey.addEventListener("click", checkGuess);
+//--- Run the validateGuess function when Enter is pressed ---//
+enterKey.addEventListener("click", validateGuess);
 
 //--- Run the delterLetter function when Delete is pressed ---//
 deleteKey.addEventListener("click", deleteLetter);
@@ -13052,11 +13052,8 @@ function buildHiddenDict() {}
 function buildGuessDict() {}
 
 //--- Check whether the word is correct ---//
-function checkGuess() {
-  if (guessString === hiddenString) {
-    alert("Hooray!");
-    resetGame();
-  } else if (
+function validateGuess() {
+  if (
     // if word is not a legal guess
     !(
       wordLists.wordBank.indexOf(guessString) !== -1 ||
@@ -13119,7 +13116,6 @@ function updateBoxColors() {
     tally[currentLetter]++;
     // console.log("tally", tally);
   }
-
   updateKeyColors();
 }
 
@@ -13140,7 +13136,11 @@ function updateKeyColors() {
       }
     });
   }
-  guessString = ""; // reset guess string for next guess
+  if (guessString === hiddenString) {
+    setTimeout(resetGame, 100);
+  } else {
+    guessString = ""; // reset guess string for next guess
+  }
 }
 
 //--- Handle deleting a letter from the guess and board when the delete key is pressed ---//
@@ -13159,6 +13159,10 @@ function deleteLetter() {
 
 //--- Clear the board everything to original state ---//
 function resetGame() {
+  if (guessString === hiddenString) {
+    alert("Yay you did it!");
+    guessString = "";
+  }
   boxes.forEach((item) => {
     item.innerHTML = ""; // clears the previous guesses from the board
 
