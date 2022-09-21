@@ -13112,6 +13112,8 @@ function updateBoxColors() {
       } else {
         currentSquare.classList.add("gray");
       }
+    } else if (!hiddenString.includes(currentLetter)) {
+      currentSquare.classList.add("gray");
     }
 
     tally[currentLetter]++;
