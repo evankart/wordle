@@ -7,22 +7,27 @@
   font-weight: 700;
 }
 
+.wrapper {
+  max-height: 100px;
+}
+
 h1 {
-  margin: 3vh auto;
+  margin: 5vh auto 3vh auto;
   font-family: "Merriweather", serif;
 }
 
-.board {
-  margin-top: 20px;
+.row {
+  max-width: 500px;
 }
 
 .row {
   height: 17vw;
+  max-height: 80px;
   width: 90vw;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5vw 0;
+  margin: 2px auto;
 }
 
 .box {
@@ -31,13 +36,16 @@ h1 {
   border-color: #3a3a3c;
   border-style: solid;
   width: 16vw;
+  max-width: 75px;
   height: 16vw;
+  max-height: 75px;
   flex-direction: row;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 32px;
   transition: transform 250ms linear;
+  margin: 0 2px;
 }
 
 .shake {
@@ -70,24 +78,31 @@ h1 {
 }
 
 .keyboard {
-  margin-top: 3vh;
+  margin-top: 5vh;
   align-self: flex-end;
+  width: 98%;
+  max-width: 500px;
 }
 
 .keyrow {
   height: 54px;
-  width: 95vw;
+  width: 95%;
+  max-width: 500px;
   display: flex;
   align-items: center;
   padding: 1px 0;
   justify-content: center;
 }
 
+.keyrow2 {
+  max-width: 450px;
+}
+
 .letterKey,
 .enterKey,
 .deleteKey {
   background-color: #818384;
-  width: 9vw;
+  width: 8vw;
   height: 50px;
   margin: 0 2px;
   display: flex;
@@ -100,7 +115,7 @@ h1 {
 .enterKey,
 .deleteKey {
   font-size: 13px;
-  width: 70px;
+  width: 15vw;
 }
 
 .gray {

@@ -13070,7 +13070,9 @@ function validateGuess() {
   }
 
   if (guesses >= 6) {
-    alert("Better luck next time!");
+    if (guessString !== hiddenString) {
+      alert(`Better luck next time! The word was: ${hiddenString}`);
+    }
     resetGame();
   }
 }
