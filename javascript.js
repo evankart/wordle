@@ -1,3 +1,5 @@
+"use strict";
+
 const wordLists = {
   wordBank: [
     "aback",
@@ -12985,7 +12987,8 @@ let randomIndex = Math.floor(Math.random() * wordLists.wordBank.length);
 let hiddenString = wordLists.wordBank[randomIndex].toLowerCase(); // pick random word
 let hiddenDict = {}; // Blank dictionary of hidden letters
 console.log(hiddenString);
-
+let targetBox;
+let letterIndex;
 //--- Guessed Word Variables ---//
 let guessString = ""; // start with empty guess
 let guessDict = {}; // Blank dictionary of guessed letters
@@ -13019,7 +13022,7 @@ letterKeys.forEach((item) => {
 window.addEventListener(
   "keydown",
   function (e) {
-    for (i = 0; i < letterKeys.length; i++) {
+    for (let i = 0; i < letterKeys.length; i++) {
       if (`${e.key}` == letterKeys[i].innerHTML.toLowerCase()) {
         letterKeys[i].click();
       }
@@ -13079,7 +13082,7 @@ function validateGuess() {
 
 //--- Add colors to the guessed letters in the grid ---//
 function updateBoxColors() {
-  row = document.getElementById(rowID);
+  let row = document.getElementById(rowID);
   let spaces = row.children;
   let tally = {};
 
@@ -13123,7 +13126,7 @@ function updateBoxColors() {
 
 //--- Add colors to the keyboard keys ---//
 function updateKeyColors() {
-  for (y in guessString) {
+  for (let y in guessString) {
     letterKeys.forEach((item) => {
       let currentKey = item.innerHTML.toLowerCase();
       if (currentKey === guessString[y] && guessString[y] === hiddenString[y]) {
@@ -13181,5 +13184,5 @@ function resetGame() {
   letterKeys.forEach((item) => {
     item.classList.remove("gray", "green", "yellow"); // resets keyboard background color
   });
-  guessArray = [];
+  let guessArray = [];
 }
