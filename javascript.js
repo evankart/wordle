@@ -12979,9 +12979,11 @@ const wordLists = {
     "zymic",
   ],
 };
-//--------------- 1. DEFINE VARIABLES -------------------//
-//
-//--- Hidden Word Variables ---//
+/*
+ * --------------- 1. DEFINE VARIABLES -------------------//
+ *
+ * --- Hidden Word Variables ---//
+ */
 let randomIndex = Math.floor(Math.random() * wordLists.wordBank.length);
 // let hiddenString = "tenet";
 let hiddenString = wordLists.wordBank[randomIndex].toLowerCase(); // pick random word
