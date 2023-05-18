@@ -9,6 +9,8 @@
 
 .wrapper {
   max-height: 100px;
+  display: flex;
+  flex-direction: column;
 }
 
 h1 {
@@ -128,4 +130,14 @@ h1 {
 
 .green {
   background-color: #538d4e;
+}
+
+@media (min-width: 800px) {
+  h1 {
+    margin: 2vh auto 1vh auto;
+  }
+
+  .keyboard {
+    margin-top: 3vh;
+  }
 }
