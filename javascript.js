@@ -4,6 +4,7 @@ import wordLists from "/wordbank.js";
 /*
  * --------------- 1. DEFINE VARIABLES -------------------//
  *
+ * 
  * --- Hidden Word Variables ---//
  */
 let randomIndex = Math.floor(Math.random() * wordLists.wordBank.length);
